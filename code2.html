@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casino</title>
+  <style>  
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-position: center;
+      background-size: cover;
+      background-image: url('https://100hp.app/lucky/onewin/assets/bg.jpg');
+    }
+  
+    .circle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;     
+    }
+    
+    .circle {
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      text-align: center;      
+    }
+  </style>
+</head>
+<body>
+  <div class="circle-container">
+    <div id="data-circle" class="circle">Wait</div>
+  </div>
+  <script>
+    function fetchData() {
+      fetch('https://crash-gateway-cr.100hp.app/state?id_n=1play_luckyjet', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer demo',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetched data:", data); // Log the full response
+
+        const dataCircle = document.getElementById('data-circle');
+
+        // Check for current state and stop_coefficients
+        if (data.current_state === "ending" && data.stop_coefficients) {
+          const coefficient = parseFloat(data.stop_coefficients).toFixed(2); // Parse and format the coefficient
+          dataCircle.textContent = coefficient; // Display the coefficient
+        } else {
+          // Default state if no matching data is found
+          dataCircle.textContent = "";
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error); // Log any fetch errors
+        document.getElementById('data-circle').textContent = 'Error fetching data';
+      });
+    }
+
+    // Call fetchData periodically
+    setInterval(fetchData, 3000); // Fetch every 3 seconds
+    fetchData(); // Initial fetch
+  </script>
+</body>
+</html>
